@@ -4,32 +4,6 @@ import Favorite from "@/models/Favorite";
 import Idea from "@/models/Idea";
 import { getCurrentUser } from "@/lib/auth";
 
-export async function GET() {
-  try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    await dbConnect();
-
-    const favorites = await Favorite.find({ user: user.id }).populate({
-      path: "idea",
-      populate: { path: "author", select: "name email image" },
-    });
-
-    return NextResponse.json({ success: true, data: favorites });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
-  }
-}
-
 export async function POST(request) {
   try {
     const user = await getCurrentUser();
@@ -43,6 +17,12 @@ export async function POST(request) {
     await dbConnect();
 
     const { ideaId } = await request.json();
+    if (!ideaId) {
+      return NextResponse.json(
+        { success: false, error: "Idea ID is required" },
+        { status: 400 }
+      );
+    }
 
     const existingFavorite = await Favorite.findOne({
       user: user.id,
@@ -55,12 +35,16 @@ export async function POST(request) {
 
       return NextResponse.json({ success: true, favorited: false });
     } else {
-      await Favorite.create({ user: user.id, idea: ideaId });
+      await Favorite.create({
+        user: user.id,
+        idea: ideaId,
+      });
       await Idea.findByIdAndUpdate(ideaId, { $inc: { likes: 1 } });
 
       return NextResponse.json({ success: true, favorited: true });
     }
   } catch (error) {
+    console.error("Error toggling favorite:", error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
