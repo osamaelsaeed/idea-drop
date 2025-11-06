@@ -61,7 +61,7 @@ export default function IdeaCard({ idea, showFavorite = true }) {
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                className="cursor-pointer p-1 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <MoreVertical className="w-5 h-5 text-gray-600" />
               </button>
@@ -88,7 +88,7 @@ export default function IdeaCard({ idea, showFavorite = true }) {
                         handleDelete();
                       }}
                       disabled={isDeleting}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left disabled:opacity-50"
+                      className="cursor-pointer flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left disabled:opacity-50"
                     >
                       <Trash2 className="w-4 h-4" />
                       {isDeleting ? "Deleting..." : "Delete"}

@@ -56,7 +56,7 @@ export default function Navbar() {
       {session && (
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="p-2 text-gray-600 hover:text-red-600 transition-colors"
+          className="cursor-pointer p-2 text-gray-600 hover:text-red-600 transition-colors"
           title="Logout"
         >
           <LogOut className="w-5 h-5" />

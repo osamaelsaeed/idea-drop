@@ -46,7 +46,7 @@ export default function FavoriteButton({ ideaId, initialFavorited = false }) {
       title={favorited ? "Remove from favorites" : "Add to favorites"}
     >
       <Heart
-        className={`w-5 h-5 transition-colors ${
+        className={`cursor-pointer w-5 h-5 transition-colors ${
           favorited
             ? "fill-pink-500 text-pink-500"
             : "text-gray-400 hover:text-pink-500"

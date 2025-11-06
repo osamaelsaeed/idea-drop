@@ -22,7 +22,7 @@ export default function LoginPage() {
         </div>
         <button
           onClick={() => signIn("google", { callbackUrl })}
-          className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium"
+          className="cursor-pointer w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium"
         >
           <Mail className="h-5 w-5 text-red-500" />
           Continue with Google
@@ -30,7 +30,7 @@ export default function LoginPage() {
 
         <button
           onClick={() => signIn("github", { callbackUrl })}
-          className="w-full flex items-center justify-center gap-3 bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-all duration-200 font-medium"
+          className="cursor-pointer w-full flex items-center justify-center gap-3 bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-all duration-200 font-medium"
         >
           <Github className="h-5 w-5" />
           Continue with GitHub
