@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-dynamic";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Lightbulb, Mail, Github } from "lucide-react";
