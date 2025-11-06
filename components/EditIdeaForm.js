@@ -1,7 +1,9 @@
+// components/EditIdeaForm.js
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const CATEGORIES = [
   "Web Development",
@@ -15,18 +17,22 @@ const CATEGORIES = [
   "Other",
 ];
 
-export default function IdeaForm() {
+export default function EditIdeaForm({ idea }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    category: "Web Development",
-    tags: "",
+    title: idea.title || "",
+    description: idea.description || "",
+    category: idea.category || "Web Development",
+    tags: idea.tags?.join(", ") || "",
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (!formData.title || !formData.description) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -35,11 +41,13 @@ export default function IdeaForm() {
         .map((tag) => tag.trim())
         .filter(Boolean);
 
-      const res = await fetch("/api/ideas", {
-        method: "POST",
+      const res = await fetch(`/api/ideas/${idea._id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...formData,
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
           tags,
         }),
       });
@@ -47,23 +55,23 @@ export default function IdeaForm() {
       const data = await res.json();
 
       if (data.success) {
-        router.push("/");
+        router.push(`/ideas/${idea._id}`);
         router.refresh();
+      } else {
+        alert(data.error || "Failed to update idea");
       }
     } catch (error) {
-      console.error("Error creating idea:", error);
+      console.error("Error updating idea:", error);
+      alert("Error updating idea");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-2xl shadow-md max-w-2xl mx-auto space-y-5"
-    >
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           Project Title *
         </label>
         <input
@@ -76,8 +84,8 @@ export default function IdeaForm() {
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           Description *
         </label>
         <textarea
@@ -92,8 +100,8 @@ export default function IdeaForm() {
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           Category *
         </label>
         <select
@@ -111,8 +119,8 @@ export default function IdeaForm() {
         </select>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           Tags (comma separated)
         </label>
         <input
@@ -124,13 +132,22 @@ export default function IdeaForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
-      >
-        {loading ? "Publishing..." : "Publish Idea"}
-      </button>
-    </form>
+      <div className="flex gap-4">
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="flex-1 bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Updating..." : "Update Idea"}
+        </button>
+
+        <Link
+          href={`/ideas/${idea._id}`}
+          className="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-300 transition-colors font-medium text-center flex items-center justify-center"
+        >
+          Cancel
+        </Link>
+      </div>
+    </div>
   );
 }
